@@ -1,0 +1,11 @@
+services:
+  # ... backend service ...
+  
+  - type: static
+    name: job-copilot-frontend
+    buildCommand: echo "No build needed"
+    staticPublishPath: ./frontend
+    headers:
+      - path: /*
+        name: Cache-Control
+        value: no-cache
