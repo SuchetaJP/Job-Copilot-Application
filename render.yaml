@@ -2,7 +2,8 @@ services:
   # ... backend service ...
   
   - type: static
-    name: job-copilot-frontend
+    name: job-copilot-api
+    #name: job-copilot-frontend
     buildCommand: echo "No build needed"
     staticPublishPath: ./frontend
     headers:
