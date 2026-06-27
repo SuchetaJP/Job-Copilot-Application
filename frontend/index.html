@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Application Co-Pilot</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Header -->
+        <header class="app-header">
+            <h1>🚀 Job Application Co-Pilot</h1>
+            <nav id="nav-auth">
+                <!-- Auth buttons injected by JS -->
+            </nav>
+        </header>
+
+        <!-- Main Content Area -->
+        <main id="main-content">
+            <!-- Login/Register Form (shown when not authenticated) -->
+            <section id="auth-section" class="section">
+                <div class="auth-container">
+                    <div class="auth-tabs">
+                        <button class="tab-btn active" data-tab="login">Login</button>
+                        <button class="tab-btn" data-tab="register">Register</button>
+                    </div>
+                    
+                    <!-- Login Form -->
+                    <form id="login-form" class="auth-form">
+                        <div class="form-group">
+                            <label for="login-email">Email</label>
+                            <input type="email" id="login-email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="login-password">Password</label>
+                            <input type="password" id="login-password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Login</button>
+                        <p id="login-error" class="error-text"></p>
+                    </form>
+
+                    <!-- Register Form -->
+                    <form id="register-form" class="auth-form hidden">
+                        <div class="form-group">
+                            <label for="register-email">Email</label>
+                            <input type="email" id="register-email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="register-password">Password (min 8 characters)</label>
+                            <input type="password" id="register-password" minlength="8" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Register</button>
+                        <p id="register-error" class="error-text"></p>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Dashboard (shown when authenticated) -->
+            <section id="dashboard-section" class="section hidden">
+                <div class="dashboard-container">
+                    <!-- Sidebar: Roles List -->
+                    <aside class="roles-sidebar">
+                        <div class="sidebar-header">
+                            <h2>Your Applications</h2>
+                            <button id="new-application-btn" class="btn btn-small">+ New</button>
+                        </div>
+                        <ul id="roles-list" class="roles-list">
+                            <!-- Populated by JS -->
+                        </ul>
+                    </aside>
+
+                    <!-- Main Panel -->
+                    <div class="main-panel">
+                        <!-- New Application Form -->
+                        <div id="new-application-panel" class="panel hidden">
+                            <h2>New Application</h2>
+                            <form id="new-application-form">
+                                <div class="form-group">
+                                    <label for="job-title">Job Title</label>
+                                    <input type="text" id="job-title" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="company">Company</label>
+                                    <input type="text" id="company" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="resume-file">Resume (PDF)</label>
+                                    <input type="file" id="resume-file" accept=".pdf" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Job Description</label>
+                                    <div class="jd-input-tabs">
+                                        <button type="button" class="tab-btn active" data-jd-tab="text">Paste Text</button>
+                                        <button type="button" class="tab-btn" data-jd-tab="url">From URL</button>
+                                    </div>
+                                    <textarea id="jd-text" rows="10" placeholder="Paste the job description here..."></textarea>
+                                    <input type="url" id="jd-url" class="hidden" placeholder="[linkedin.com](https://linkedin.com/jobs/)">
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-large">
+                                    🚀 Generate Application Kit
+                                </button>
+                                <p id="application-error" class="error-text"></p>
+                            </form>
+                            
+                            <!-- Loading State -->
+                            <div id="pipeline-loading" class="loading-container hidden">
+                                <div class="spinner"></div>
+                                <p>Generating your application kit...</p>
+                                <p class="loading-substep" id="loading-step">Analyzing fit...</p>
+                            </div>
+                        </div>
+
+                        <!-- Application Details View -->
+                        <div id="application-details-panel" class="panel hidden">
+                            <div class="details-header">
+                                <h2 id="details-title">Software Engineer at Google</h2>
+                                <select id="status-select" class="status-select">
+                                    <option value="not_yet">Not Applied</option>
+                                    <option value="applied">Applied</option>
+                                    <option value="interviewed">Interviewed</option>
+                                    <option value="rejected">Rejected</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Tabs for Different Artifacts -->
+                            <div class="artifact-tabs">
+                                <button class="artifact-tab active" data-artifact="fit">Fit Analysis</button>
+                                <button class="artifact-tab" data-artifact="resume">Resume</button>
+                                <button class="artifact-tab" data-artifact="cover">Cover Letter</button>
+                                <button class="artifact-tab" data-artifact="interview">Interview Prep</button>
+                            </div>
+
+                            <!-- Artifact Content -->
+                            <div class="artifact-content">
+                                <div id="artifact-fit" class="artifact-panel">
+                                    <!-- Fit analysis content -->
+                                </div>
+                                <div id="artifact-resume" class="artifact-panel hidden">
+                                    <!-- Resume diff view -->
+                                </div>
+                                <div id="artifact-cover" class="artifact-panel hidden">
+                                    <!-- Cover letter -->
+                                </div>
+                                <div id="artifact-interview" class="artifact-panel hidden">
+                                    <!-- Interview Q&A -->
+                                </div>
+                            </div>
+
+                            <!-- Actions -->
+                            <div class="artifact-actions">
+                                <button id="regenerate-btn" class="btn btn-secondary">
+                                    🔄 Regenerate
+                                </button>
+                                <button id="download-btn" class="btn btn-primary">
+                                    📥 Download
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Empty State -->
+                        <div id="empty-state-panel" class="panel">
+                            <div class="empty-state">
+                                <h2>Welcome to Job Application Co-Pilot!</h2>
+                                <p>Upload your resume and a job description to get started.</p>
+                                <p>The AI will create a complete application kit tailored to each role.</p>
+                                <button id="empty-new-btn" class="btn btn-primary btn-large">
+                                    + Create Your First Application
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="components/auth.js"></script>
+    <script src="components/upload.js"></script>
+    <script src="components/roles.js"></script>
+    <script src="components/diff.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
