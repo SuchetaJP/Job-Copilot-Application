@@ -13,7 +13,12 @@
 // ============================================================
 
 //const API_BASE_URL = '[localhost](http://localhost:8000)';--added extra
-const API_BASE_URL = 'http://localhost:8000';
+//const API_BASE_URL = 'http://localhost:8000';
+
+const API_BASE_URL = window.location.hostname === 'localhost' 
+    ? 'http://localhost:8000'
+    : '[job-copilot-api.onrender.com](https://job-copilot-api.onrender.com)';  // Your Render API URL
+
 
 // ============================================================
 // GLOBAL STATE
