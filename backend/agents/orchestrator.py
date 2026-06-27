@@ -183,34 +183,41 @@ def build_pipeline_graph() -> StateGraph:
     Construct the LangGraph workflow.
     
     Graph structure:
-    START -> fit_analysis -> [resume_writer, cover_letter, interviewer] -> END
-    
+    #START -> fit_analysis -> [resume_writer, cover_letter, interviewer] -> END
+    START
+    ↓
+    fit_analysis_agent
+        ├── resume_writer_agent
+        ├── cover_letter_agent
+        └── interviewer_agent
+              ↓
+            END
     The three writer agents run in parallel after fit analysis completes.
     """
     # Create graph with our state schema
     workflow = StateGraph(PipelineState)
     
     # Add nodes (each node is a function that updates state)
-    workflow.add_node("fit_analysis", fit_analysis_node)
-    workflow.add_node("resume_writer", resume_writer_node)
-    workflow.add_node("cover_letter", cover_letter_node)
-    workflow.add_node("interviewer", interviewer_node)
+    workflow.add_node("fit_analysis_agent", fit_analysis_node)#added extra changed from fit_analysis to fit_analysis_agent
+    workflow.add_node("resume_writer_agent", resume_writer_node)#added extra changed from resume_writer to resume_writer_agent
+    workflow.add_node("cover_letter_agent", cover_letter_node)#added extra changed from cover_letter to cover_letter_agent
+    workflow.add_node("interviewer_agent", interviewer_node)#added extra changed from interviewer to interviewer_agent
     
     # Define edges
-    # START -> fit_analysis (always runs first)
-    workflow.add_edge(START, "fit_analysis")
+    # START -> fit_analysis_agent (always runs first)
+    workflow.add_edge(START, "fit_analysis_agent")#added extra changed from fit_analysis to fit_analysis_agent
     
-    # fit_analysis -> all three writers (parallel)
+    # fit_analysis_agent -> all three writers (parallel)
     # Using add_edge creates sequential flow
     # For true parallel execution, you'd use a fan-out pattern
-    workflow.add_edge("fit_analysis", "resume_writer")
-    workflow.add_edge("fit_analysis", "cover_letter")
-    workflow.add_edge("fit_analysis", "interviewer")
+    workflow.add_edge("fit_analysis_agent", "resume_writer_agent")#added extra changed from fit_analysis to fit_analysis_agent
+    workflow.add_edge("fit_analysis_agent", "cover_letter_agent")#added extra changed from fit_analysis to fit_analysis_agent
+    workflow.add_edge("fit_analysis_agent", "interviewer_agent")#added extra changed from fit_analysis to fit_analysis_agent
     
     # All writers -> END
-    workflow.add_edge("resume_writer", END)
-    workflow.add_edge("cover_letter", END)
-    workflow.add_edge("interviewer", END)
+    workflow.add_edge("resume_writer_agent", END)#added extra changed from resume_writer to resume_writer_agent
+    workflow.add_edge("cover_letter_agent", END)#added extra changed from cover_letter to cover_letter_agent
+    workflow.add_edge("interviewer_agent", END)#added extra changed from interviewer to interviewer_agent
     
     return workflow
 
