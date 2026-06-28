@@ -9,6 +9,7 @@ This is where everything comes together:
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from .database import engine, Base
 from .routers import users, applications
@@ -84,3 +85,9 @@ def health_check():
         "database": "connected",
         "version": "1.0.0"
     }
+#added extra code to have login page
+app.mount(
+    "/",
+    StaticFiles(directory="frontend", html=True),
+    name="frontend",
+)
