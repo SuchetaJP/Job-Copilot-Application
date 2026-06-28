@@ -12,6 +12,8 @@ WHY JWT?
 - Standard: widely supported, well-understood
 """
 
+import bcrypt
+
 from datetime import datetime, timedelta, timezone
 from typing import Optional
 
@@ -60,6 +62,8 @@ def get_password_hash(password: str) -> str:
     print("Password:", password)
     print("Length:", len(password))
     print("Type:", type(password))
+    print("Bytes =", len(password.encode("utf-8")))#added extra
+    print("bcrypt version =", bcrypt.__version__)    #added extra
 
     return pwd_context.hash(password)  
 
@@ -165,6 +169,10 @@ def authenticate_user(db: Session, email: str, password: str) -> Optional[User]:
     Different contexts might want different error messages.
     """
     user = db.query(User).filter(User.email == email).first()
+    #extra added
+    if not user:
+        return None
+
     print(user.hashed_password) #extra added
     print(len(user.hashed_password)) #extra added
     if not user:
