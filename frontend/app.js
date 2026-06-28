@@ -505,7 +505,113 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('Failed to regenerate: ' + error.message);
         }
     });
+    //extra added code for downloading text
+    // document.getElementById('download-btn')?.addEventListener('click', () => {
+
+    // const panelMap = {
+    //     fit: 'artifact-fit',
+    //     resume: 'artifact-resume',
+    //     cover: 'artifact-cover',
+    //     interview: 'artifact-interview'
+    // };
+
+    // const panelId = panelMap[AppState.currentArtifact];
+
+    // const content =
+    //     document.getElementById(panelId)?.innerText || '';
+
+    // const blob = new Blob(
+    //     [content],
+    //     { type: 'text/plain;charset=utf-8' }
+    // );
+
+    // const url = URL.createObjectURL(blob);
+
+    // const a = document.createElement('a');
+
+    // a.href = url;
+
+    // a.download =
+    //     `${AppState.currentArtifact}.txt`;
+
+    // document.body.appendChild(a);
+
+    // a.click();
+
+    // document.body.removeChild(a);
+
+    // URL.revokeObjectURL(url);
+    // });
     
+    document.getElementById("download-btn").addEventListener("click", async () => {
+
+    if (!AppState.currentRoleId) return;
+
+    try {
+
+        const role = await apiRequest(`/api/applications/${AppState.currentRoleId}`);
+
+        const draftMap = {
+            fit: "fit_analysis",
+            resume: "resume_rewrite",
+            cover: "cover_letter",
+            interview: "interview_qa"
+        };
+
+        const draftType = draftMap[AppState.currentArtifact];
+
+        const draft = role.drafts.find(d => d.draft_type === draftType);
+
+        if (!draft) {
+            alert("Nothing to download");
+            return;
+        }
+
+        let text = draft.content;
+
+        if (draftType === "fit_analysis") {
+            text = JSON.stringify(JSON.parse(text), null, 2);
+        }
+
+        const {
+            Document,
+            Packer,
+            Paragraph
+        } = docx;
+
+        const paragraphs = text
+            .split("\n")
+            .map(line => new Paragraph(line));
+
+        const documentDoc = new Document({
+            sections: [{
+                properties: {},
+                children: paragraphs
+            }]
+        });
+
+        const blob = await Packer.toBlob(documentDoc);
+
+        const link = document.createElement("a");
+
+        link.href = URL.createObjectURL(blob);
+
+        link.download =
+            `${role.company}_${role.job_title}_${draftType}.docx`;
+
+        link.click();
+
+    }
+    catch (err) {
+
+        console.error(err);
+
+        alert(err.message);
+
+    }
+
+    });
+
     // Check auth on load
     checkAuth();
 });
