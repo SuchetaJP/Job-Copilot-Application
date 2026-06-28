@@ -70,6 +70,12 @@ app.add_middleware(
 app.include_router(users.router)
 app.include_router(applications.router)
 
+#added extra code to have login page
+app.mount(
+    "/",
+    StaticFiles(directory="frontend", html=True),
+    name="frontend",
+)
 
 @app.get("/")
 def root():
@@ -85,9 +91,4 @@ def health_check():
         "database": "connected",
         "version": "1.0.0"
     }
-#added extra code to have login page
-app.mount(
-    "/",
-    StaticFiles(directory="frontend", html=True),
-    name="frontend",
-)
+
