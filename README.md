@@ -44,3 +44,6 @@ job-copilot/
 └── README.md
 └──── copilot.db 			 # SQLite database (auto-created)
 └──render.yaml				 # render config
+
+
+
